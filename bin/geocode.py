@@ -6,14 +6,32 @@ overwritten on each run.
 """
 import argparse
 import csv
-import geocoders
-import os
+from geocoders import *
+import os, sys
+from collections import OrderedDict
 
-DATA_DIR = os.path.realpath(os.path.join(os.path.dirname(__file__), '../data'))
+infile = sys.argv[1]
 
-def geocode(file, geocoder):
-    pass
+def multi_geocode(q):
+	gc_dict = OrderedDict([
+		('google', google(q)),
+		('mapquest', mapquest(q)),
+		('nycgeoclient', nycgeoclient(q)),
+		('pelias', pelias(q)),
+		('bing', bing(q))
+	])
+	return gc_dict
+#print multi_geocode('2 broadway NYC')
 
+fieldnames = ['google','mapquest','nycgeoclient','pelias','bing']
 
-if __name__ == "__main__":
-    pass
+outfile = open('out.csv','wb')
+csvwriter = csv.DictWriter(outfile, fieldnames)
+csvwriter.writeheader()
+
+with open(infile, 'rU') as f:
+	for line in f:
+		results = multi_geocode(line)
+		csvwriter.writerow(results)
+		
+
