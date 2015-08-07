@@ -4,14 +4,17 @@ import os
 import urllib
 
 from geopy.geocoders import GoogleV3, GeocoderDotUS, Bing
+from geopy import Point
 
 http = httplib2.Http()
+
+bounds = [40.4774,-74.2589,40.9176,-73.7004]
 
 def google(query):
     g = GoogleV3()
     try:
-        place, (lat, lng) = g.geocode(query)
-        return (lat, lng)
+        place, (lat, lng) = g.geocode(query, bounds=bounds)
+        return place, (lat, lng)
     except:
         return None, None
 
@@ -19,33 +22,18 @@ def geocoderdotus(query):
     us = GeocoderDotUS()
     try:
         place, (lat, lng) = us.geocode(query)
-        return (lat, lng)
+        return place, (lat, lng)
     except:
         return None, None
 
 def bing(query):
+	p = Point(bounds[0],bounds[1])
 	b = Bing( os.environ.get('BING_API_KEY'))
 	try:
-		place, (lat, lng) = b.geocode(query)
-		return (lat, lng)
+		place, (lat, lng) = b.geocode(query, user_location=p)
+		return place, (lat, lng)
 	except:
 		return None, None
-
-def yahoo(query):
-    BASE = "http://where.yahooapis.com/geocode?"
-    params = {
-        'flags': 'JC', # JSON response, simplified
-        'q': query,
-        'appid': os.environ.get('YAHOO_APPLICATION_ID', '')
-    }
-    url = BASE + urllib.urlencode(params)
-    r, c = http.request(url)
-    c = json.loads(c)
-    try:
-        result = c['ResultSet']['Results'][0]
-        return result['latitude'], result['longitude']
-    except (KeyError, IndexError), e:
-        return None, None
 
 def mapquest(query):
     BASE = "http://open.mapquestapi.com/nominatim/v1/search?"
@@ -74,8 +62,9 @@ def nycgeoclient(query):
 	c = json.loads(c)
 	try:
 		result = c['results'][0]['response'];
-		return result['latitude'], result['longitude'], result['ntaName']
+		return result['latitude'], result['longitude'], result['firstBoroughName']
 	except (KeyError, IndexError), e:
+		print c
         	return None, None
 
 def pelias(query):
@@ -83,7 +72,7 @@ def pelias(query):
 	params = {
 		'input' : query,
 		'zoom': 12,
-		'bbox' : '40.4774,-74.2589,40.9176,-73.7004'
+		'bbox' : ''.join(str(e) for e in bounds)
 	}
         url = BASE + urllib.urlencode(params)
         r, c = http.request(url)
@@ -91,6 +80,6 @@ def pelias(query):
         try:
 		result = c['features'][0]
 		return result['geometry']['coordinates'][1],  result['geometry']['coordinates'][0], result['properties']['neighborhood']
-	except (KeyError, IndexError), e:
+	except:
 		return None, None
 
