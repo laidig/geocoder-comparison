@@ -14,13 +14,16 @@ We do have other options, of course:
  - [Geocoder.us][g]
  - [Nominatum][n] (MapQuest)
  - [Pelias][p]
+ - [NYC Geoclient][c]
 
  [y]: http://developer.yahoo.com/geo/placefinder/
  [b]: http://msdn.microsoft.com/en-us/library/cc966793.aspx
  [g]: http://geocoder.us/
  [n]: http://wiki.openstreetmap.org/wiki/Nominatim
  [p]: http://pelias.mapzen.com/
+ [c]: https://developer.cityofnewyork.us/api/geoclient-api
  
-To test these options against Google, I'm using a sample dataset that illustrates some of the known problems working with imperfect input. 
-
-Every geocoding run will overwrite the results data in a file called `data/<geocoder>.csv` and log the result to `data/results.csv`.
+##Usage: 
+ This depents on setting environment variables for geocoder keys. The `setup_env.sh` script, appropriately configured, will set them.
+ 
+ Once that is set, all that is necessary is to run `python bin/geocode.py [INFILE]`. This will write out a file called out.csv
