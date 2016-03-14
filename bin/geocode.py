@@ -18,10 +18,10 @@ def multi_geocode(q):
 	q = q.replace('\n','')
 	q = q.replace('at','and')
 	q = q.replace('/','and')
+	q = q.replace('&','and')
 	gc_dict = OrderedDict([
 		('address',q),
-		('google', (q)),
-		('mapquest', mapquest(q)),
+		('google', google(q)),
 		('nycgeoclient', nycgeoclient(q)),
 		('pelias', pelias(q)),
 		('bing', bing(q))

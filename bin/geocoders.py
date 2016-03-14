@@ -13,8 +13,8 @@ bounds = [40.4774,-74.2589,40.9176,-73.7004]
 def google(query):
     g = GoogleV3()
     try:
-        place, (lat, lng) = g.geocode(query, bounds=bounds)
-        return place, (lat, lng)
+        address, (lat, lng) = g.geocode(query, bounds=bounds)
+        return address, (lat, lng)
     except:
         return None, None
 
@@ -27,7 +27,7 @@ def geocoderdotus(query):
         return None, None
 
 def bing(query):
-	p = Point(bounds[0],bounds[1])
+	p = Point((bounds[0]+bounds[2]/2,(bounds[1]+bounds[3])/2))
 	b = Bing( os.environ.get('BING_API_KEY'))
 	try:
 		place, (lat, lng) = b.geocode(query, user_location=p)
@@ -59,8 +59,8 @@ def nycgeoclient(query):
 	}
 	url = BASE + urllib.urlencode(params)
 	r, c = http.request(url)
-	c = json.loads(c)
 	try:
+		c = json.loads(c)
 		result = c['results'][0]['response'];
 		return result['latitude'], result['longitude'], result['firstBoroughName']
 	except (KeyError, IndexError), e:
@@ -68,18 +68,23 @@ def nycgeoclient(query):
         	return None, None
 
 def pelias(query):
-	BASE = "http://pelias.mapzen.com/search?"
+	BASE = "http://pelias.mapzen.com/v1/search?"
 	params = {
-		'input' : query,
+		'api_key': os.environ.get('MAPZEN_KEY'),
+		'text' : query,
 		'zoom': 12,
-		'bbox' : ''.join(str(e) for e in bounds)
+		'boundary.rect.min_lat': bounds[0],
+		'boundary.rect.min_lon': bounds[1],
+		'boundary.rect.max_lat': bounds[2],
+		'boundary.rect.max_lon': bounds[3]
 	}
         url = BASE + urllib.urlencode(params)
+	print url
         r, c = http.request(url)
         c = json.loads(c)
         try:
 		result = c['features'][0]
-		return result['geometry']['coordinates'][1],  result['geometry']['coordinates'][0], result['properties']['neighborhood']
-	except:
+		return result['geometry']['coordinates'][1],  result['geometry']['coordinates'][0], result['properties']['label']
+	except :
 		return None, None
 
