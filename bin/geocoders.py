@@ -35,11 +35,14 @@ def bing(query):
 	except:
 		return None, None
 
-def mapquest(query):
-    BASE = "http://open.mapquestapi.com/nominatim/v1/search?"
+def nominatim(query):
+    BASE = "http://nominatim.openstreetmap.org/search?"
+    box = ','.join([bounds[1],bounds[2],bounds[3],bounds[0]])
     params = {
         'format': 'json',
-        'q': query
+        'q': query,
+	'bounded':1,
+	'viewbox': box
     }
     url = BASE + urllib.urlencode(params)
     r, c = http.request(url)
@@ -72,7 +75,6 @@ def pelias(query):
 	params = {
 		'api_key': os.environ.get('MAPZEN_KEY'),
 		'text' : query,
-		'zoom': 12,
 		'boundary.rect.min_lat': bounds[0],
 		'boundary.rect.min_lon': bounds[1],
 		'boundary.rect.max_lat': bounds[2],

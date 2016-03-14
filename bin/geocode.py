@@ -28,7 +28,7 @@ def multi_geocode(q):
 	])
 	return gc_dict
 
-fieldnames = ['address','google','mapquest','nycgeoclient','pelias','bing']
+fieldnames = ['address','google','nycgeoclient','pelias','bing']
 
 outfile = open('out.csv','wb')
 csvwriter = csv.DictWriter(outfile, fieldnames)
