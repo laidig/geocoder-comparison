@@ -24,6 +24,6 @@ We do have other options, of course:
  [c]: https://developer.cityofnewyork.us/api/geoclient-api
  
 ##Usage: 
- This depents on setting environment variables for geocoder keys. The `setup_env.sh` script, appropriately configured, will set them.
+ This depents on setting environment variables for geocoder keys.  `source setup_env.sh` script, when appropriately configured with your keys, will set them.
  
  Once that is set, all that is necessary is to run `python bin/geocode.py [INFILE]`. This will write out a file called out.csv
