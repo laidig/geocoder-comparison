@@ -25,7 +25,7 @@ with open(infile, 'rU') as f:
 			dictresults = {'in_address':line,'out_address':results[0].encode('ascii', 'ignore'), 'latlon':results[1]}
 			print dictresults
 		except:
-			dictresults = {'in_address':line,'out_address':None, 'lat':None , 'lon':None}
+			dictresults = {'in_address':line,'out_address':None, 'latlon':None }
 			print "no results for " + line
 		csvwriter.writerow(dictresults)
 		sleep(1)

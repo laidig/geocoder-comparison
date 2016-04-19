@@ -81,7 +81,6 @@ def pelias(query):
 		'boundary.rect.max_lon': bounds[3]
 	}
         url = BASE + urllib.urlencode(params)
-	print url
         r, c = http.request(url)
         c = json.loads(c)
         try:
