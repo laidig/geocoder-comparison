@@ -12,17 +12,17 @@ fieldnames = ['in_address','out_address','latlon']
 outfile = open('output.csv','wb')
 infile = sys.argv[1]
 
-csvwriter = csv.DictWriter(outfile, fieldnames)
+csvwriter = csv.DictWriter(outfile, fieldnames, dialect='excel')
 csvwriter.writeheader() 
 
 with open(infile, 'rU') as f:
 	
 	for line in f:
-		line = line.encode('ascii', 'ignore')
+		line = line.encode('ascii', 'ignore').replace('\n','')
 		results = google(line)
-		print results
 		try:
-			dictresults = {'in_address':line,'out_address':results[0].encode('ascii', 'ignore'), 'latlon':results[1]}
+			dictresults = {
+				'in_address':line.replace('"',''),'out_address':results[0].encode('ascii', 'ignore').replace('"',''), 'latlon':results[1]}
 			print dictresults
 		except:
 			dictresults = {'in_address':line,'out_address':None, 'latlon':None }
